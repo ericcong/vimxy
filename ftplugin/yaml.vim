@@ -1,0 +1,1 @@
+let g:vimxy_env = "yaml"

@@ -3,6 +3,14 @@ if !has('python')
     finish
 endif
 
+function! vimxy#vimxy()
+    if g:vimxy_env == "yaml"
+        call vimxy#y2x()
+    else
+        call vimxy#x2y()
+    endif
+endfunction
+
 function! vimxy#x2y()
 python << endpython
 import vim, xmltodict, yaml
@@ -22,6 +30,7 @@ try:
     yaml_string = ordered_dump(src_obj, Dumper=yaml.SafeDumper, default_flow_style=False)
     vim.current.buffer[:] = yaml_string.split("\n")
     vim.command("set ft=yaml")
+    vim.command("let g:vimxy_env='yaml'")
 except:
     print("Incorrect XML format")
 endpython
@@ -47,6 +56,7 @@ try:
     xml_string = xmltodict.unparse(src_obj, pretty=True)
     vim.current.buffer[:] = xml_string.split("\n")
     vim.command("set ft=xml")
+    vim.command("let g:vimxy_env='xml'")
 except:
     print("Incorrect YAML format")
 endpython
