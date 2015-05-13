@@ -27,7 +27,7 @@ def ordered_dump(data, stream=None, Dumper=yaml.Dumper, **kwds):
     return yaml.dump(data, stream, OrderedDumper, **kwds)
 try:
     src_obj = xmltodict.parse(xml_string)
-    yaml_string = ordered_dump(src_obj, Dumper=yaml.SafeDumper, default_flow_style=False)
+    yaml_string = ordered_dump(src_obj, Dumper=yaml.SafeDumper, default_flow_style=False, indent=4)
     vim.current.buffer[:] = yaml_string.split("\n")
     vim.command("set ft=yaml")
     vim.command("let g:vimxy_env='yaml'")
