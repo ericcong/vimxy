@@ -13,7 +13,7 @@ endfunction
 
 function! vimxy#x2y()
 python << endpython
-import vim, xmltodict, yaml
+import vim, xmltodict, yaml, re
 from collections import OrderedDict
 xml_string = "\n".join(vim.current.buffer)
 def ordered_dump(data, stream=None, Dumper=yaml.Dumper, **kwds):
@@ -28,6 +28,7 @@ def ordered_dump(data, stream=None, Dumper=yaml.Dumper, **kwds):
 try:
     src_obj = xmltodict.parse(xml_string)
     yaml_string = ordered_dump(src_obj, Dumper=yaml.SafeDumper, default_flow_style=False, indent=4)
+    yaml_string = re.sub(r'^(\s+)-   ', r'\g<1>  - ', yaml_string)
     vim.current.buffer[:] = yaml_string.split("\n")
     vim.command("set ft=yaml")
     vim.command("let g:vimxy_env='yaml'")
