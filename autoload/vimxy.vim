@@ -4,7 +4,7 @@ if !has('python')
 endif
 
 function! vimxy#vimxy()
-    if g:vimxy_env == "yaml"
+    if exists("g:vimxy_env") && g:vimxy_env == "yaml"
         call vimxy#y2x()
     else
         call vimxy#x2y()
