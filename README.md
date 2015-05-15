@@ -17,5 +17,6 @@ Then if [Vundle](https://github.com/gmarik/Vundle.vim) is installed, just add:
 in your vimrc, then run `:PluginInstall`
 
 # Basic Usage
-- Run `:Vimxy` to convert XML file in the buffer into YAML
-- Run `:UnVimxy` to convert the YAML file back to XML
+Run `:Vimxy` to toggle XML and YAML mode
+
+If `filetype` is `XML` then change to corresponding YAML, if it's `YAML` then change to corresponding XML.
