@@ -17,7 +17,7 @@ import vim, xmltodict, yaml, re
 xml_string_src = "\n".join(vim.current.buffer)
 try:
     src_obj = xmltodict.parse(xml_string_src)
-    yaml_string_dest = yaml.dump(src_obj, stream=None, Dumper=yaml.Dumper, default_flow_style=False, indent=4, width=999, sort_keys=False)
+    yaml_string_dest = yaml.dump(src_obj, stream=None, Dumper=yaml.SafeDumper, default_flow_style=False, indent=4, width=999, sort_keys=False)
     yaml_string_dest = re.sub(r'(\n\s+)-   ', r'\g<1>  - ', yaml_string_dest)
     vim.current.buffer[:] = yaml_string_dest.split("\n")
     vim.command("set ft=yaml")
