@@ -1,5 +1,5 @@
-if !has('python')
-    echo "Error: Required vim compiled with +python"
+if !has('python3')
+    echo "Error: Required vim compiled with +python3"
     finish
 endif
 
@@ -12,53 +12,32 @@ function! vimxy#vimxy()
 endfunction
 
 function! vimxy#x2y()
-python << endpython
+py3 << endpy3
 import vim, xmltodict, yaml, re
-from collections import OrderedDict
-xml_string = "\n".join(vim.current.buffer)
-def ordered_dump(data, stream=None, Dumper=yaml.Dumper, **kwds):
-    class OrderedDumper(Dumper):
-        pass
-    def _dict_representer(dumper, data):
-        return dumper.represent_mapping(
-            yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-            data.items())
-    OrderedDumper.add_representer(OrderedDict, _dict_representer)
-    return yaml.dump(data, stream, OrderedDumper, **kwds)
+xml_string_src = "\n".join(vim.current.buffer)
 try:
-    src_obj = xmltodict.parse(xml_string)
-    yaml_string = ordered_dump(src_obj, Dumper=yaml.SafeDumper, default_flow_style=False, indent=4, width=999)
-    yaml_string = re.sub(r'(\n\s+)-   ', r'\g<1>  - ', yaml_string)
-    vim.current.buffer[:] = yaml_string.split("\n")
+    src_obj = xmltodict.parse(xml_string_src)
+    yaml_string_dest = yaml.dump(src_obj, stream=None, Dumper=yaml.SafeDumper, default_flow_style=False, indent=4, width=999, sort_keys=False)
+    yaml_string_dest = re.sub(r'(\n\s+)-   ', r'\g<1>  - ', yaml_string_dest)
+    vim.current.buffer[:] = yaml_string_dest.split("\n")
     vim.command("set ft=yaml")
     vim.command("let g:vimxy_env='yaml'")
 except:
     print("Incorrect XML format")
-endpython
+endpy3
 endfunction
 
 function! vimxy#y2x()
-python << endpython
+py3 << endpy3
 import vim, xmltodict, yaml
-from collections import OrderedDict
-yaml_string = "\n".join(vim.current.buffer)
-def ordered_load(stream, Loader=yaml.Loader, object_pairs_hook=OrderedDict):
-    class OrderedLoader(Loader):
-        pass
-    def construct_mapping(loader, node):
-        loader.flatten_mapping(node)
-        return object_pairs_hook(loader.construct_pairs(node))
-    OrderedLoader.add_constructor(
-        yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
-        construct_mapping)
-    return yaml.load(stream, OrderedLoader)
+yaml_string_src = "\n".join(vim.current.buffer)
 try:
-    src_obj = ordered_load(yaml_string, yaml.SafeLoader)
-    xml_string = xmltodict.unparse(src_obj, pretty=True)
-    vim.current.buffer[:] = xml_string.split("\n")
+    src_obj = yaml.load(yaml_string_src, yaml.SafeLoader)
+    xml_string_dest = xmltodict.unparse(src_obj, pretty=True, encoding="UTF-8")
+    vim.current.buffer[:] = xml_string_dest.split("\n")
     vim.command("set ft=xml")
     vim.command("let g:vimxy_env='xml'")
 except:
     print("Incorrect YAML format")
-endpython
+endpy3
 endfunction
